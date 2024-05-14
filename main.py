@@ -1,5 +1,5 @@
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton,WebAppInfo
 from datetime import datetime
 from googletrans import Translator
 import threading
@@ -379,11 +379,11 @@ def command_start(m):
         markup.add("ترجمه")
         # if cid in dict_cid_language_dest:
         #     markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}")
-        markup.add("مترادف و تعریف لغت")
+        markup.add("مترادف و تعریف لغت انگلیسی")
         markup.add("بیشترین کلمات ترجمه شده 📊")
         markup.add("میزان اشتراک باقیمانده 📆")
         markup.add("فروشگاه 🛒")
-        markup.add("ارتقا حساب ⬆️","لینک به سایت 🔗")
+        markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
         bot.send_message(cid,f"""
 سلام {m.chat.first_name} عزیز 
 به ربات مترجم خوش آمدید
@@ -398,7 +398,8 @@ def command_start(m):
         markup.add(InlineKeyboardButton('آمار تمامی کاربران',callback_data='panel_amar'))
         markup.add(InlineKeyboardButton('ارسال همگانی',callback_data='panel_brodcast'),InlineKeyboardButton('فوروارد همگانی',callback_data='panel_forall'))
         markup.add(InlineKeyboardButton("لیست کاربران",callback_data="listusers"),InlineKeyboardButton("تغییر میزان اشتراک کاربران",callback_data="changeeshterak"))
-        markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"),InlineKeyboardButton("تنظیم دکمه سایت",callback_data="seting"))
+        # markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"),InlineKeyboardButton("تنظیم دکمه سایت",callback_data="seting"))
+        markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"))
         markup.add(InlineKeyboardButton("افزودن محصول",callback_data="adminaddproduct"))
         markup.add(InlineKeyboardButton("ویرایش و فعال سازی قیمت پلن ها",callback_data="editprice"))
         bot.send_message(cid,"""
@@ -815,7 +816,8 @@ def call_callback_panel_amar(call):
     markup.add(InlineKeyboardButton('آمار تمامی کاربران',callback_data='panel_amar'))
     markup.add(InlineKeyboardButton('ارسال همگانی',callback_data='panel_brodcast'),InlineKeyboardButton('فوروارد همگانی',callback_data='panel_forall'))
     markup.add(InlineKeyboardButton("لیست کاربران",callback_data="listusers"),InlineKeyboardButton("تغییر میزان اشتراک کاربران",callback_data="changeeshterak"))
-    markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"),InlineKeyboardButton("تنظیم دکمه سایت",callback_data="seting"))
+    # markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"),InlineKeyboardButton("تنظیم دکمه سایت",callback_data="seting"))
+    markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"))
     markup.add(InlineKeyboardButton("افزودن محصول",callback_data="adminaddproduct"))
     markup.add(InlineKeyboardButton("ویرایش و فعال سازی قیمت پلن ها",callback_data="editprice"))
     bot.edit_message_text("""
@@ -947,11 +949,11 @@ def languages_def(call):
     markup.add("✅ترجمه✅")
     if cid in dict_cid_language_dest:
         markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
-    markup.add("مترادف و تعریف لغت")
+    markup.add("مترادف و تعریف لغت انگلیسی")
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add("ارتقا حساب ⬆️","لینک به سایت 🔗")
+    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
 
 
@@ -967,11 +969,11 @@ def languages_def(call):
     markup.add("✅ترجمه✅")
     if cid in dict_cid_language_dest:
         markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
-    markup.add("مترادف و تعریف لغت")
+    markup.add("مترادف و تعریف لغت انگلیسی")
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add("ارتقا حساب ⬆️","لینک به سایت 🔗")
+    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
         
     
@@ -1064,15 +1066,15 @@ def handel_text(m):
 
     if cid in dict_cid_language_dest:
         markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
-    markup.add("مترادف و تعریف لغت")
+    markup.add("مترادف و تعریف لغت انگلیسی")
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add("ارتقا حساب ⬆️","لینک به سایت 🔗")
+    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"برای دریافت ترجمه کلمه یا جمله مورد نظر خود را ارسال کنید",reply_markup=markup)
     userStep[cid]=1
 
-@bot.message_handler(func=lambda m: m.text=="مترادف و تعریف لغت" or m.text=="✅مترادف و تعریف لغت✅")
+@bot.message_handler(func=lambda m: m.text=="مترادف و تعریف لغت انگلیسی" or m.text=="✅مترادف و تعریف لغت انگلیسی✅")
 def handel_text(m):
     cid=m.chat.id
     text=m.text
@@ -1087,11 +1089,11 @@ def handel_text(m):
             return
     markup=ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add("ترجمه")
-    markup.add('✅مترادف و تعریف لغت✅')
+    markup.add('✅مترادف و تعریف لغت انگلیسی✅')
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add("ارتقا حساب ⬆️","لینک به سایت 🔗")
+    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"لطفا برای دریافت تعریف لغت کلمه خود را ارسال کنید:",reply_markup=markup)
     userStep[cid]=2
 
@@ -1121,22 +1123,22 @@ def menu_kebord_markup(m):
     markup.add("ترجمه")
     # if cid in dict_cid_language_dest:
     #     markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
-    markup.add("مترادف و تعریف لغت")
+    markup.add("مترادف و تعریف لغت انگلیسی")
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add("ارتقا حساب ⬆️","لینک به سایت 🔗")
+    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"منو اصلی",reply_markup=markup)
-@bot.message_handler(func=lambda m: m.text=="لینک به سایت 🔗")
-def handel_text(m):
-    cid=m.chat.id
-    text=m.text
-    mid=m.message_id
-    userStep[cid]=0
-    markup=InlineKeyboardMarkup()
-    for i in button_site:
-        markup.add(InlineKeyboardButton(i,url=button_site[i]))
-    bot.send_message(cid,'برای مشاهده سایت از دکمه زیر استفاده کنید:',reply_markup=markup)
+# @bot.message_handler(func=lambda m: m.text==)
+# def handel_text(m):
+#     cid=m.chat.id
+#     text=m.text
+#     mid=m.message_id
+#     userStep[cid]=0
+#     markup=InlineKeyboardMarkup()
+#     for i in button_site:
+#         markup.add(InlineKeyboardButton(i,url=button_site[i]))
+#     bot.send_message(cid,'برای مشاهده سایت از دکمه زیر استفاده کنید:',reply_markup=markup)
 
 @bot.message_handler(func=lambda m: m.text.startswith("یک ماهه"))
 def handel_text(m):
@@ -1205,9 +1207,15 @@ def handel_text(m):
     # ID='@'+m.from_user.username
     dict_info=database2.use_users_cid(cid)[0]
     if int(dict_info["rem"])==0:
-        bot.send_message(cid,"اشتراک شما به پایان رسیده است لطفا برای استفاده از ربات در بخش ارتقا حساب پلن خود را خریداری نمایید.")
+        markup=ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add('ارتقا حساب ⬆️')
+        markup.add("منو اصلی 📜")
+        bot.send_message(cid,"اشتراک شما به پایان رسیده است لطفا برای استفاده از ربات در بخش ارتقا حساب پلن خود را خریداری نمایید.",reply_markup=markup)
     else:
-        bot.send_message(cid,f"باقیمانده اشتراک شما {dict_info['rem']} روز است.")
+        markup=ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add('ارتقا حساب ⬆️')
+        markup.add("منو اصلی 📜")
+        bot.send_message(cid,f"باقیمانده اشتراک شما {dict_info['rem']} روز است.",reply_markup=markup)
 
 
 @bot.message_handler(func=lambda m: m.text=="بیشترین کلمات ترجمه شده 📊")
@@ -1398,6 +1406,12 @@ def shopiing(m):
 def send_music(m):
     cid=m.chat.id
     text=m.text
+    if m.from_user.username==None:
+        ID=str(cid) 
+    else:
+        ID='@'+m.from_user.username
+    database2.insert_users(int(cid),ID,3)
+
     if cid in list_user_block:
         bot.send_message(cid,"کاربر گرامی شما از سمت ادمین بلاک شده اید")
         return
@@ -1607,6 +1621,13 @@ def send_music(m):
 def send_music(m):
     cid=m.chat.id
     text=m.text
+
+    if m.from_user.username==None:
+        ID=str(cid) 
+    else:
+        ID='@'+m.from_user.username
+    database2.insert_users(int(cid),ID,3)
+
     if cid in list_user_block:
         bot.send_message(cid,"کاربر گرامی شما از سمت ادمین بلاک شده اید")
         return
