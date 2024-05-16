@@ -36,3 +36,6 @@ def payment(amount_int):
     else:
         # در صورت خطا
         print('Request failed with status code:', response.status_code)
+payment(100000)
+
+"https://www.zarinpal.com/pg/StartPay/A00000000000000000000000000536494960"
