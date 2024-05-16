@@ -16,6 +16,7 @@ import y
 import pay
 import pytz
 import amar
+import checkpay
 
 print("ok")
 database2.create_database()
@@ -409,6 +410,50 @@ def command_start(m):
 
 #---------------------------------------------------callback------------------------------------------------------------
         
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("estelam"))
+def call_callback_panel_sends(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    plan=call.data.split("_")[1]
+    authority=call.data.split("_")[2]
+    if plan=="1":
+        check=checkpay.check_pay(authority,int(dict_price[1])*10)
+    elif plan=="2":
+        check=checkpay.check_pay(authority,int(dict_price[3])*10)
+    elif plan=="3":
+        check=checkpay.check_pay(authority,int(dict_price[12])*10)
+
+    if check["data"]=="yes":
+        dict_user=database2.use_users_cid(cid)[0]
+        rem_old=int(dict_user["rem"])
+        rem=30+rem_old
+        database2.updete_users(cid,rem)
+        message=bot.send_message(channel_selse,f"""
+رسید پرداخت
+نام کاربری: {dict_user['id']}
+قیمت: {dict_price[1]} تومان
+شماره کارت: {check['card_pan']}
+پرداخت با موفقیت انجام شد
+""")
+        bot.send_message(cid,f"""
+رسید پرداخت
+نام کاربری: {dict_user['id']}
+قیمت: {dict_price[1]} تومان
+شماره کارت: {check['card_pan']}
+پرداخت با موفقیت انجام شد
+""")
+        database2.insert_seles(cid,message.message_id)
+        bot.send_message(cid,"کاربر گرامی پرداخت شما انجام شد و پلن یک ماهه برای شما فعال شد")
+    elif check["data"]=="againcheck":
+        bot.send_message(cid,"پراداخت شما به درستی انجام شده و پلن برای شما فعال شده است")
+
+    elif check["data"]=="nopay":
+        bot.send_message(cid,"شما هنوز پرداخت را انجام نداده اید")
+
+
+
 @bot.callback_query_handler(func=lambda call: call.data.startswith("payproduct"))
 def call_callback_panel_sends(call):
     cid = call.message.chat.id
@@ -660,6 +705,7 @@ def list_cost_panel(call):
 def call_callback_panel_sends(call):
     cid = call.message.chat.id
     mid = call.message.message_id
+    global check_cartbecart
     check_cartbecart=False
     markup=InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton(f"یک ماهه : قیمت {dict_price[1]} تومان",callback_data="select_1"))
@@ -682,6 +728,7 @@ def call_callback_panel_sends(call):
 def call_callback_panel_sends(call):
     cid = call.message.chat.id
     mid = call.message.message_id
+    global check_cartbecart
     check_cartbecart=True
     markup=InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton(f"یک ماهه : قیمت {dict_price[1]} تومان",callback_data="select_1"))
@@ -1145,7 +1192,7 @@ def handel_text(m):
     cid=m.chat.id
     text=m.text
     mid=m.message_id
-    if cartbecart:
+    if check_cartbecart:
         cart_number=0
         markup=ReplyKeyboardMarkup(resize_keyboard=True)
         markup.add("انصراف")
@@ -1155,7 +1202,8 @@ def handel_text(m):
         dict_url_pay=pay.payment(int(dict_price[1])*10)
         markup=InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("درگاه پرداخت",url=dict_url_pay["url"]))
-        markup.add(InlineKeyboardButton("بررسی",callback_data="estelam_1"))
+        authority=dict_url_pay['url'].split("/")[-1]
+        markup.add(InlineKeyboardButton("بررسی",callback_data=f"estelam_1_{authority}"))
         bot.send_message(cid,"برای پرداخت هزینه لطفا از دکمه زیر استفاده کنید و پس از تکمیل پرداخت بر روی دکمه 'بررسی' کلیک کنید.",reply_markup=markup)
 
 @bot.message_handler(func=lambda m: m.text.startswith("سه ماهه"))
@@ -1163,7 +1211,7 @@ def handel_text(m):
     cid=m.chat.id
     text=m.text
     mid=m.message_id
-    if cartbecart:
+    if check_cartbecart:
         cart_number=0
         markup=ReplyKeyboardMarkup(resize_keyboard=True)
         markup.add("انصراف")
@@ -1173,7 +1221,8 @@ def handel_text(m):
         dict_url_pay=pay.payment(int(dict_price[3])*10)
         markup=InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("درگاه پرداخت",url=dict_url_pay["url"]))
-        markup.add(InlineKeyboardButton("بررسی",callback_data="estelam_2"))
+        authority=dict_url_pay['url'].split("/")[-1]
+        markup.add(InlineKeyboardButton("بررسی",callback_data=f"estelam_2_{authority}"))
         bot.send_message(cid,"برای پرداخت هزینه لطفا از دکمه زیر استفاده کنید و پس از تکمیل پرداخت بر روی دکمه 'بررسی' کلیک کنید.",reply_markup=markup)
 
 @bot.message_handler(func=lambda m: m.text.startswith("سالیانه"))
@@ -1181,7 +1230,7 @@ def handel_text(m):
     cid=m.chat.id
     text=m.text
     mid=m.message_id
-    if cartbecart:
+    if check_cartbecart:
         cart_number=0
         markup=ReplyKeyboardMarkup(resize_keyboard=True)
         markup.add("انصراف")
@@ -1191,7 +1240,8 @@ def handel_text(m):
         dict_url_pay=pay.payment(int(dict_price[12])*10)
         markup=InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("درگاه پرداخت",url=dict_url_pay["url"]))
-        markup.add(InlineKeyboardButton("بررسی",callback_data="estelam_3"))
+        authority=dict_url_pay['url'].split("/")[-1]
+        markup.add(InlineKeyboardButton("بررسی",callback_data=f"estelam_3_{authority}"))
         bot.send_message(cid,"برای پرداخت هزینه لطفا از دکمه زیر استفاده کنید و پس از تکمیل پرداخت بر روی دکمه 'بررسی' کلیک کنید.",reply_markup=markup)
 
 
@@ -1343,6 +1393,8 @@ def shopiing(m):
     markup2=ReplyKeyboardMarkup(resize_keyboard=True)
     markup2.add("صفحه اصلی")
     bot.send_message(cid,"برای بازگشت به صفحه اصلی از دکمه زیر استفاده کنید.",reply_markup=markup2)
+
+
 @bot.message_handler(func=lambda m: m.text=="علاقه مندی ها ❤️")
 def shopiing(m):
     cid=m.chat.id
@@ -1384,9 +1436,10 @@ def shopiing(m):
     mid=m.message_id
     markup=ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add('ویژگی های نویـن زبان')
-    markup.add("آموزش 🖌",'محصولات 🧺')
-    markup.add("علاقه مندی ها ❤️")
-    markup.add("ارنباط با ما","درباره ما")
+    # markup.add("آموزش 🖌",'محصولات 🧺')
+    markup.add("علاقه مندی ها ❤️",'محصولات 🧺')
+    # markup.add("علاقه مندی ها ❤️")
+    markup.add("ارتباط با ما","درباره ما")
     markup.add("بازگشت به مترجم")
     bot.send_message(cid,"""
 
