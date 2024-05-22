@@ -34,6 +34,17 @@ database2.create_database()
     # text="<pre>" + "<b>مترادف</b>\n"+"\n".join(list_) + "</pre>"
     # return text
 
+question={"برای خرید محصولات از طریق نوین زبان چه اطمینانی وجود دارد؟":1,"چگونه می‌توانم دایره واژگانم را گسترش دهم؟":2,
+          "چگونه می‌توانم مهارت نوشتاری انگلیسی را بهبود دهم؟":3,"چگونه می توانم مهارت  درک مطلب  را یاد بگیرم؟":4,
+          "چگونه در صحبت کردن اعتماد به نفس به دست آوریم؟":5}
+response={1:"نوین زبان از سال 1388 در حوزه آموزش زبان می باشد و دارای نماد اعتماد 5 ساله و مجوزهای لازم است که  از این حیث میتوانید با اطمینان خرید کنید.",
+          2:"با مکالمه و خواندن متون متنوع، مانند رمان‌ها، خبرها، و مقالات تخصصی",
+          3:"با نوشتن مقالات، رساله‌ها، یا روزنامه‌نگاری و درخواست بازخورد از دیگران.",
+          4:"متون مختلف را بخوانید، ساده شروع کنید، خلاصه کنید و واژگان بسازید",
+          5:'به طور منظم تمرین کنید، بر ارتباطات تمرکز کنید و برای یادگیری اشتباه کنید. برای پشتیبانی به گروه های مکالمه بپیوندید.'}
+
+
+
 TOKEN ='5067354118:AAEJmoFKEX8wifnCKPZXHS7YXE-CdaNAY8I'
 
 channel_property=-1002041663174
@@ -48,6 +59,9 @@ channel1_id = -1002016755212  # Replace with your channel1 ID
 channel2_id = -1001992750806  # Replace with your channel2 ID
 chanal_base=-1002029203141
 channel_selse=-1002077197203
+channel_comments=-1002078167303
+channel_sample=-1002038883842
+channel_product=-1002114933707
 # no_eshterak=True
 check_cartbecart=True
 cartbecart=True
@@ -62,10 +76,11 @@ dict_opposite={}
 dict_interest={}
 dict_cid_language_dest={}
 dict_cid_language_source={}
-add_product_admin={"photo_id":"","title":"","details":"","price":0}
+add_product_admin={"category":"","photo_id":"","title":"","details":"","price":0,"msg_id_sample":0,"msg_id_product":""}
 info_change={"cid":0,"id":"i"}
 button_site={}
 dict_price={"status":"no",1:0,3:0,12:0}
+id_for_comment={"id":0}
 languages_aks = {
     'fa': 'فارسی',
     'en': 'انگلیسی',
@@ -408,8 +423,190 @@ def command_start(m):
 برای مدیریت بازی از دکمه های زیر استفاده کنید
 """,reply_markup=markup)
 
+
+
+
+
 #---------------------------------------------------callback------------------------------------------------------------
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("completed"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    text=call.message.text
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+    bot.edit_message_text("""
+محصول کاملا دریافت شد
+لطفا قیمت محصول را به صورت عدد انگلسیی ارسال کنید:""",cid,mid,reply_markup=markup)
+    userStep[cid]=10003
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("answers-to-question"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    text=call.message.text
+    ID=int(call.data.split("_")[1])
+    bot.edit_message_text(f"""
+{text}
+➖➖➖➖➖➖➖➖➖
+{response[ID]}
+""",cid,mid)
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("regectcomment"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    text=call.message.text
+    bot.delete_message(cid,mid)
+    bot.send_message(cid,"کامنت کاربر رد شد")
+@bot.callback_query_handler(func=lambda call: call.data.startswith("confirmcomment"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    text=call.message.text
+    ID=int(call.data.split("_")[1])
+    list_comments=database2.use_comments_id(ID)
+    message=bot.send_message(channel_comments,f"""{text}""")
+    msg_id=message.message_id
+    if len(list_comments)==0:
+        database2.insert_comments(ID,f'{msg_id}')
+    else:
+        dict_comment=list_comments[0]
+        mssag_id_ego=dict_comment['mid_comment']
+        database2.updete_comments(ID,f'{mssag_id_ego},{msg_id}')
+    bot.send_message(cid,"کامنت برای محصول قرار گرفت")
+    bot.delete_message(cid,mid)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("showlistproduct"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    category_c=call.data.split("_")[1]
+    list_product=database2.use_product_category(category_c)
+    markup=InlineKeyboardMarkup()
+    for i in list_product:
+        markup.add(InlineKeyboardButton(i["title"],callback_data=f"showproduct_{i['id']}"))
+    markup.add(InlineKeyboardButton("بازگشت به دسته بندی ↪️",callback_data="back_to_category"))
+    bot.edit_message_text("لطفا محصول مورد نظر خود را انتخاب کنید 👇",cid,mid,reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("back_to_category"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    dict_interest.setdefault(cid,[])
+    list_dict_product=database2.use_product()
+    if len(list_dict_product)==0:
+        markup2=ReplyKeyboardMarkup(resize_keyboard=True)
+        markup2.add("صفحه اصلی")
+        bot.edit_message_text(cid,"در حال حاضر محصولی در فروشگاه وجود ندارد.",cid,mid,reply_markup=markup2)
+    else:
+        list_cate=[]
+        for i in list_dict_product:
+            list_cate.append(i['category'])
+        list_cate=set(list_cate)
+        markup=InlineKeyboardMarkup()
+        for i in list_cate:
+            markup.add(InlineKeyboardButton(str(i),callback_data=f"showlistproduct_{i}"))
+        bot.edit_message_text("لطفا از بین دسته بندی زیر موردی را که میخواهید انتخاب کنید 👇",cid,mid,reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("showproduct"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    ID=call.data.split("_")[1]
+    dict_product=database2.use_product_id(ID)[0]
+
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
+    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    if int(dict_product['id']) in dict_interest[cid]:
+        markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
+    else:
+        markup.add(InlineKeyboardButton("افزودن به علاقه مندی ها ❤️",callback_data=f"addinca_{dict_product['id']}"))
+    bot.send_photo(cid,dict_product["photo_id"],f"""
+{dict_product["title"]}
+قیمت: {dict_product["price"]} تومان
+""",reply_markup=markup)
+
+    markup2=ReplyKeyboardMarkup(resize_keyboard=True)
+    markup2.add("صفحه اصلی")
+    bot.send_message(cid,"برای بازگشت به صفحه اصلی از دکمه زیر استفاده کنید.",reply_markup=markup2)
+
+
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("sample"))
+def call_callback_panel_sends(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    ID=int(call.data.split("_")[1])
+    msg_id=int(database2.use_sample_id(ID)[0]['mid_sample'])
+    bot.send_message(cid,"نمونه محصول 👇")
+    bot.copy_message(cid,channel_sample,msg_id)
+    bot.answer_callback_query(call.id,"نمونه محصول ارسال شد")
+
+
+
+    
+@bot.callback_query_handler(func=lambda call: call.data.startswith("estelamp"))
+def call_callback_panel_sends(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    ID=int(call.data.split("_")[1])
+    authority=call.data.split("_")[2]
+    dict_produt=database2.use_product_id(ID)[0]
+    check=checkpay.check_pay(authority,int(dict_produt['price'])*10)
+
+    if check["data"]=="yes":
+        dict_user=database2.use_users_cid(cid)[0]
         
+        message=bot.send_message(channel_selse,f"""
+رسید پرداخت
+خرید محصول ✅
+نام کاربری: {dict_user['id']}
+قیمت: {dict_produt['price']} تومان
+شماره کارت: {check['card_pan']}
+پرداخت با موفقیت انجام شد
+""")
+        bot.send_message(cid,f"""
+رسید پرداخت
+نام کاربری: {dict_user['id']}
+قیمت: {dict_produt['price']} تومان
+شماره کارت: {check['card_pan']}
+پرداخت با موفقیت انجام شد
+""")
+
+        bot.send_message(admin,f"""
+خرید محصول ✅
+نام کاربری خریدار: {dict_user['id']}
+➖➖➖➖➖➖➖➖➖
+نام محصول: {dict_produt['title']}
+قیمت: {dict_produt['price']} تومان
+""")
+        msg_id_pro=database2.use_orginal_id(ID)[0]['mid_orginals']
+        bot.send_message(cid,"محصول شما 👇")
+        if ',' not in msg_id_pro:
+            bot.copy_message(cid,channel_product,int(msg_id_pro))
+        else:
+            list_msg_id_pro=msg_id_pro.split(",")
+            for i in list_msg_id_pro:
+                bot.copy_message(cid,channel_product,int(i))
+
+        database2.insert_seles(cid,message.message_id)
+        bot.send_message(cid,"کاربر گرامی پرداخت شما انجام شد و محصول برای شما ارسال شد")
+    elif check["data"]=="againcheck":
+        bot.send_message(cid,"پراداخت شما به درستی انجام شده و محصول برای شما ارسال شد")
+
+    elif check["data"]=="nopay":
+        bot.send_message(cid,"شما هنوز پرداخت را انجام نداده اید")
+
 
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("estelam"))
@@ -460,11 +657,17 @@ def call_callback_panel_sends(call):
     mid = call.message.message_id
     ID=call.data.split("_")[1]
     dict_produt=database2.use_product_id(ID)[0]
+
+    dict_url_pay=pay.payment(int(dict_produt['price'])*10)
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("درگاه پرداخت",url=dict_url_pay["url"]))
+    authority=dict_url_pay['url'].split("/")[-1]
+    markup.add(InlineKeyboardButton("بررسی",callback_data=f"estelamp_{ID}_{authority}"))
+
     bot.send_message(cid,f"""
-کاربر گرامی لطفا برای خربد '{dict_produt["title"]}' مبلغ {dict_produt["price"]} تومان را به شماره کارت 3636463463466 کارت به کارت کنید.
-و سپس عکس رسید را ارسال کنید:
-""")
-    userStep[cid]=20000
+مبلغ محصول: {dict_produt['price']}
+برای پرداخت لطفا از دکمه زیر استفاده کنید و پس از تکمیل پرداخت حتما بر روی دکمه 'بررسی' کلیک کنید
+""",reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith("addinca"))
 def call_callback_panel_sends(call):
@@ -475,8 +678,9 @@ def call_callback_panel_sends(call):
     dict_interest[cid].append(int(data[1]))
     dict_=database2.use_product_id(data[1])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("خرید",callback_data=f"payproduct_{dict_['id']}"))
+    markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_["details"]))
+    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
     markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_['id']}"))
     bot.edit_message_reply_markup(cid,mid,reply_markup=markup)
     bot.answer_callback_query(call.id,"محصول مورد نظر به لیست علاقه مندی های شما اضافه شد")
@@ -490,9 +694,11 @@ def call_callback_panel_sends(call):
     dict_interest[cid].remove(int(data[1]))
     dict_=database2.use_product_id(data[1])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("خرید",callback_data=f"payproduct_{dict_['id']}"))
+    markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_["details"]))
+    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
     markup.add(InlineKeyboardButton("افزودن به علاقه مندی ها ❤️",callback_data=f"addinca_{dict_['id']}"))
+    
     bot.edit_message_reply_markup(cid,mid,reply_markup=markup)
     bot.answer_callback_query(call.id,"محصول مورد نظر از لیست علاقه مندی های شما حذف شد")
 
@@ -502,6 +708,34 @@ def call_callback_panel_sends(call):
     cid = call.message.chat.id
     mid = call.message.message_id
     data=call.data.split("_")
+    # markup=InlineKeyboardMarkup()
+    # markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+    list_dict_product=database2.use_product()
+    if len(list_dict_product)==0:
+        markup=InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+        bot.send_message(cid,"برای افزودن محصول لطفا ابتدا اسم دسته بندی که محصول قرار است در آن قرار بگیرد را ارسال کنید:",reply_markup=markup)
+        userStep[cid]=9999
+    else:
+        list_cate=[]
+        # print(list_dict_product)
+        for i in list_dict_product:
+            list_cate.append(str(i['category']))
+        markup=InlineKeyboardMarkup()
+        list_cate=set(list_cate)
+        for i in list_cate:
+            markup.add(InlineKeyboardButton(i,callback_data=f"addcategory_{i}"))
+        markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+        bot.send_message(cid,"برای افزودن محصول لطفا دسته بندی که محصول شما در آن قرار میگیرد را از بین گزینه های زیر انتخاب کنید یا اینکه اسم دسته بندی جدید را ارسال کنید:",reply_markup=markup)
+        userStep[cid]=9999
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("addcategory"))
+def call_callback_panel_sends(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    data=call.data.split("_")
+    add_product_admin["category"]=data[1]
     markup=InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
     bot.send_message(cid,"برای افزودن محصول لطفا ابتدا  عکس محصول را ارسال کنید:",reply_markup=markup)
@@ -1023,17 +1257,78 @@ def languages_def(call):
     markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
         
+
+
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("showproduct"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    ID=call.data.split("_")[1]
+    dict_product=database2.use_product_id(ID)
+
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
+    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    if int(dict_product['id']) in dict_interest[cid]:
+        markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
+    else:
+        markup.add(InlineKeyboardButton("افزودن به علاقه مندی ها ❤️",callback_data=f"addinca_{dict_product['id']}"))
+    bot.send_photo(cid,dict_product["photo_id"],f"""
+{dict_product["title"]}
+قیمت: {dict_product["price"]} تومان
+""",reply_markup=markup)
+
+    markup2=ReplyKeyboardMarkup(resize_keyboard=True)
+    markup2.add("صفحه اصلی")
+    bot.send_message(cid,"برای بازگشت به صفحه اصلی از دکمه زیر استفاده کنید.",reply_markup=markup2)
+
+
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith("comments"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    ID=call.data.split("_")[1]
+    list_comments=database2.use_comments_id(int(ID))
+    if len(list_comments)==0:
+        bot.send_message(cid,"هنوز نظری برای این محصول ثبت نشده است.")
+    else:
+        bot.send_message(cid,"نظرات کاربران 👇")
+        dict_comments=list_comments[0]
+        if "," not in dict_comments['mid_comment']:
+            bot.copy_message(cid,channel_comments,int(dict_comments['mid_comment']))
+        else:
+            list_mid=dict_comments['mid_comment'].split(",")
+            for i in list_mid:
+                bot.copy_message(cid,channel_comments,int(i))
+
+
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("ثبت نظر",callback_data=f"registercomment_{ID}"))
+    bot.send_message(cid,"برای ثبت نظر از دکمه زیر استفاده کنید 👇",reply_markup=markup)
     
+    
+@bot.callback_query_handler(func=lambda call: call.data.startswith("registercomment"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    ID=call.data.split("_")[1]
+    markup=ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add("فروشگاه 🛒")
+    bot.send_message(cid,"لطفا نظر خود را در رابطه با محصول ارسال کنید:",reply_markup=markup)
+    id_for_comment["id"]=int(ID)
+    userStep[cid]=30000
 
-
-
-
-
-# @bot.callback_query_handler(func=lambda call: call.data.startswith("dargah"))
-# def languages_def(call):
-#     cid = call.message.chat.id
-#     mid = call.message.message_id
-#     pelan=int(call.data.split("_")[-1])
+@bot.callback_query_handler(func=lambda call: call.data.startswith("dargah"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    pelan=int(call.data.split("_")[-1])
 
 
 
@@ -1160,7 +1455,7 @@ def handel_text(m):
     else:
         bot.send_message(cid,"این بخش در حال حاضر غیر فعال میباشد.")
 
-@bot.message_handler(func=lambda m: m.text=="منو اصلی 📜" or m.text=="انصراف" or m.text=="بازگشت به مترجم")
+@bot.message_handler(func=lambda m: m.text=="منو اصلی 📜" or m.text=="انصراف" or m.text=="بازگشت به مترجم ↪️")
 def menu_kebord_markup(m):
     cid=m.chat.id
     text=m.text
@@ -1292,7 +1587,7 @@ def shopiing(m):
         except:
             pass
 
-@bot.message_handler(func=lambda m: m.text=="ارنباط با ما")
+@bot.message_handler(func=lambda m: m.text=="ارتباط با ما 📞")
 def shopiing(m):
     cid=m.chat.id
     text=m.text
@@ -1309,7 +1604,7 @@ def shopiing(m):
 ساعت پاسخ گویی: ۱۰ صبح تا ۵ بعد از ظهر روز های غیر تعطیل
 """)
 
-@bot.message_handler(func=lambda m: m.text=="درباره ما")
+@bot.message_handler(func=lambda m: m.text=="درباره ما 📖")
 def shopiing(m):
     cid=m.chat.id
     text=m.text
@@ -1370,29 +1665,44 @@ def shopiing(m):
     markup.add("صفحه اصلی")
     bot.send_message(cid,"لطفا بخش مورد نظر خود را انتخاب کنید:",reply_markup=markup)
 
-@bot.message_handler(func=lambda m: m.text=='محصولات 🧺')
+@bot.message_handler(func=lambda m: m.text=="محصولات 🛍")
 def shopiing(m):
     cid=m.chat.id
     text=m.text
     mid=m.message_id
     dict_interest.setdefault(cid,[])
-    list_product=database2.use_product()
-    for i in list_product:
+    list_dict_product=database2.use_product()
+    if len(list_dict_product)==0:
+        markup2=ReplyKeyboardMarkup(resize_keyboard=True)
+        markup2.add("صفحه اصلی")
+        bot.send_message(cid,"در حال حاضر محصولی در فروشگاه وجود ندارد.",reply_markup=markup2)
+    else:
+        list_cate=[]
+        for i in list_dict_product:
+            list_cate.append(i['category'])
+        list_cate=set(list_cate)
         markup=InlineKeyboardMarkup()
-        markup.add(InlineKeyboardButton("خرید",callback_data=f"payproduct_{i['id']}"))
-        markup.add(InlineKeyboardButton("جزئیات",url=i["details"]))
-        if int(i['id']) in dict_interest[cid]:
-            markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{i['id']}"))
-        else:
-            markup.add(InlineKeyboardButton("افزودن به علاقه مندی ها ❤️",callback_data=f"addinca_{i['id']}"))
-        bot.send_photo(cid,i["photo_id"],f"""
-{i["title"]}
-قیمت: {i["price"]} تومان
-""",reply_markup=markup)
+        for i in list_cate:
+            markup.add(InlineKeyboardButton(str(i),callback_data=f"showlistproduct_{i}"))
+        bot.send_message(cid,"لطفا از بین دسته بندی زیر موردی را که میخواهید انتخاب کنید 👇",reply_markup=markup)
+#     list_product=database2.use_product()
+#     for i in list_product:
+#         markup=InlineKeyboardMarkup()
+#         markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{i['id']}"))
+#         markup.add(InlineKeyboardButton("خرید",callback_data=f"payproduct_{i['id']}"))
+#         markup.add(InlineKeyboardButton("جزئیات",url=i["details"]))
+#         if int(i['id']) in dict_interest[cid]:
+#             markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{i['id']}"))
+#         else:
+#             markup.add(InlineKeyboardButton("افزودن به علاقه مندی ها ❤️",callback_data=f"addinca_{i['id']}"))
+#         bot.send_photo(cid,i["photo_id"],f"""
+# {i["title"]}
+# قیمت: {i["price"]} تومان
+# """,reply_markup=markup)
 
-    markup2=ReplyKeyboardMarkup(resize_keyboard=True)
-    markup2.add("صفحه اصلی")
-    bot.send_message(cid,"برای بازگشت به صفحه اصلی از دکمه زیر استفاده کنید.",reply_markup=markup2)
+#     markup2=ReplyKeyboardMarkup(resize_keyboard=True)
+#     markup2.add("صفحه اصلی")
+#     bot.send_message(cid,"برای بازگشت به صفحه اصلی از دکمه زیر استفاده کنید.",reply_markup=markup2)
 
 
 @bot.message_handler(func=lambda m: m.text=="علاقه مندی ها ❤️")
@@ -1405,8 +1715,9 @@ def shopiing(m):
             for i in dict_interest[cid]:
                 dict_=database2.use_product_id(i)[0]
                 markup=InlineKeyboardMarkup()
-                markup.add(InlineKeyboardButton("خرید",callback_data=f"payproduct_{dict_['id']}"))
+                markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_['id']}"))
                 markup.add(InlineKeyboardButton("جزئیات",url=dict_["details"]))
+                markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
                 markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_['id']}"))
                 bot.send_photo(cid,dict_["photo_id"],f"""
 {dict_["title"]}
@@ -1419,15 +1730,26 @@ def shopiing(m):
  لیست علاقه مندی ها خالی است.
 
 شما هنوز هیچ کالایی در لیست دلخواه ندارید.
-محصولات 🧺 جالب بسیاری را در "محصولات 🧺" ما پیدا خواهید کرد.
+محصولات 🛍  جالب بسیاری را در "محصولات 🛍 " ما پیدا خواهید کرد.
 """)
     else:
         bot.send_message(cid,"""
-این لیست علاقه مندی ها خالی است.
+لیست علاقه مندی ها خالی است.
 
 شما هنوز هیچ کالایی در لیست دلخواه ندارید.
-محصولات 🧺 جالب بسیاری را در "محصولات 🧺" ما پیدا خواهید کرد.
+محصولات 🛍  جالب بسیاری را در "محصولات 🛍 " ما پیدا خواهید کرد.
 """)
+
+@bot.message_handler(func=lambda m: m.text=="سوالات متداول ❔")
+def shopiing(m):
+    cid=m.chat.id
+    text=m.text
+    mid=m.message_id
+    for i in question:
+        markup=InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("پاسخ",callback_data=f"answers-to-question_{question[i]}"))
+        bot.send_message(cid,i,reply_markup=markup)
+    
 
 @bot.message_handler(func=lambda m: m.text=="فروشگاه 🛒" or m.text=="صفحه اصلی")
 def shopiing(m):
@@ -1436,11 +1758,12 @@ def shopiing(m):
     mid=m.message_id
     markup=ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add('ویژگی های نویـن زبان')
-    # markup.add("آموزش 🖌",'محصولات 🧺')
-    markup.add("علاقه مندی ها ❤️",'محصولات 🧺')
+    # markup.add("آموزش 🖌",'محصولات 🛍 ')
+    markup.add("علاقه مندی ها ❤️",'محصولات 🛍')
     # markup.add("علاقه مندی ها ❤️")
-    markup.add("ارتباط با ما","درباره ما")
-    markup.add("بازگشت به مترجم")
+    markup.add("سوالات متداول ❔")
+    markup.add("ارتباط با ما 📞","درباره ما 📖")
+    markup.add("بازگشت به مترجم ↪️")
     bot.send_message(cid,"""
 
 نویـــــن زبـــــان
@@ -1967,6 +2290,17 @@ def send_music(m):
         userStep[cid]=0
 
 
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id)==9999)
+def send_music(m):
+    cid=m.chat.id
+    text=m.text
+    mid=m.message_id
+    add_product_admin["category"]=text
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+    bot.send_message(cid,"برای افزودن محصول لطفا ابتدا  عکس محصول را ارسال کنید:",reply_markup=markup)
+    userStep[cid]=10000
+
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id)==10001)
 def send_music(m):
     cid=m.chat.id
@@ -1990,9 +2324,13 @@ def send_music(m):
     markup=InlineKeyboardMarkup()
     markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
     bot.send_message(cid,"""
-لینک توضیحات جزئیات دریافت شد
-لطفا قیمت محصول را به صورت عدد انگلسیی ارسال کنید:""",reply_markup=markup)
-    userStep[cid]=10003
+لینک جزئیات دریافت شد                    
+لطفا نمونه ای از محصول را برای نمایش به کاربر ارسال کنید:""",reply_markup=markup)
+    userStep[cid]=10004
+#     bot.send_message(cid,"""
+# لینک توضیحات جزئیات دریافت شد
+# لطفا قیمت محصول را به صورت عدد انگلسیی ارسال کنید:""",reply_markup=markup)
+    # userStep[cid]=10003
 
 
 @bot.message_handler(func=lambda m: get_user_step(m.chat.id)==10003)
@@ -2002,7 +2340,10 @@ def send_music(m):
     mid=m.message_id
     if text.isdigit():
         add_product_admin["price"]=int(text)
-        database2.insert_product(add_product_admin["photo_id"],add_product_admin['title'],add_product_admin['details'],add_product_admin['price'])
+        database2.insert_product(add_product_admin['category'],add_product_admin["photo_id"],add_product_admin['title'],add_product_admin['details'],add_product_admin['price'])
+        ID=database2.use_product_photo(add_product_admin["photo_id"])[0]["id"]
+        database2.insert_sample(ID,add_product_admin["msg_id_sample"])
+        database2.insert_orginal(ID,add_product_admin["msg_id_product"])
         bot.send_photo(cid,add_product_admin["photo_id"],f"""
 {add_product_admin['title']}
 قیمت: {add_product_admin['price']} تومان
@@ -2016,6 +2357,27 @@ def send_music(m):
         markup=InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
         bot.send_message(cid,":لطفا قیمت را فقط به صورت عدد انگلیسی ارسال کنید",reply_markup=markup)
+
+
+@bot.message_handler(func=lambda m: get_user_step(m.chat.id)==30000)
+def send_music(m):
+    cid=m.chat.id
+    text=m.text
+    mid=m.message_id
+    dict_pro=database2.use_product_id(id_for_comment["id"])[0]
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment["id"]}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
+    bot.send_message(admin,f"""
+کامنت برای محصول : {dict_pro['title']}
+از دسته : {dict_pro['category']}
+👇👇👇👇👇👇
+""")
+    bot.send_message(admin,f"""
+نام کاربر: {m.from_user.username}
+{text}
+""",reply_markup=markup)
+    bot.send_message(cid,"کاربر گرامی نظر شما ثبت شد با تشکر از ثبت نظر شما")
+
 
 
 @bot.message_handler(content_types=['photo', 'video','voice', 'sticker','animation'])
@@ -2158,15 +2520,32 @@ def handle_messages(m):
 """,reply_markup=markup)
         bot.send_message(cid,"رسید شما برای ادمین ارسال شده و در اسرع وقت بررسی میشود.")
         userStep[cid]=0
-# @bot.message_handler(func=lambda m: get_user_step(m.chat.id)==3)
-# def send_music(m):
-#     cid=m.chat.id
-#     text=m.text
-#     try:
-#         bot.send_message(cid,nltk_def.get_antonyms(text))
-#     except:
+
+
+    elif get_user_step(cid)==10004:
+        mid=m.message_id
+        msg=bot.copy_message(channel_sample,cid,mid)
+        msg_id=msg.message_id
+        add_product_admin["msg_id_sample"]=msg_id
+        markup=InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+        bot.send_message(cid,"لطفا فایل ها یا کلیپ های اصلی محصول را ارسال کنید:",reply_markup=markup)
+        userStep[cid]=10005
+
+    elif get_user_step(cid)==10005:
+        mid=m.message_id
+        msg=bot.copy_message(channel_product,cid,mid)
+        msg_id=msg.message_id
+        if add_product_admin["msg_id_product"]=="":
+            add_product_admin["msg_id_product"]=f"{msg_id}"
+        else:
+            add_product_admin["msg_id_product"]+=f",{msg_id}"
+        markup=InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+        markup.add(InlineKeyboardButton("ادامه",callback_data="completed"))
+        bot.send_message(cid,"در صورتی که تمام محصول را ارسال کرده اید بر روی دکمه ادامه کلیک کنید در غیر این صورت فایل ها یا کلیپ های بعدی را ارسال کنید:",reply_markup=markup)
+
         
-#         bot.send_message(cid,"برای کلمه ای که ارسال کردید متضادی پیدا نشد")
 
 def check_and_notify_thread():
     beshe="yes"
