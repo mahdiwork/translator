@@ -2380,7 +2380,7 @@ def send_music(m):
 
 
 
-@bot.message_handler(content_types=['photo', 'video','voice', 'sticker','animation'])
+@bot.message_handler(content_types=['photo','document','audio', 'video','voice', 'sticker','animation'])
 def handle_messages(m):
     cid = m.chat.id
     mid=m.message_id
