@@ -17,11 +17,11 @@ dict_info={
 
 
 def create_database():
-    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'])
-    cursor = cnx.cursor()
+    #cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'])
+    #cursor = cnx.cursor()
     # cursor.execute("DROP database IF EXISTS data")
     # cursor.execute("create database if not exists data")
-    cursor.execute("use data")
+    #cursor.execute("use data")
     # cursor.execute("CREATE TABLE IF NOT EXISTS users(cid VARCHAR(100),id VARCHAR(100),rem int(100))") 
     # cursor.execute("CREATE TABLE IF NOT EXISTS words(word VARCHAR(100))")
     # cursor.execute("""CREATE TABLE IF NOT EXISTS translations(text TEXT, 
@@ -36,13 +36,13 @@ def create_database():
     #                title VARCHAR(500),
     #                details TEXT, 
     #                price INT);""")
-    cursor.execute("ALTER TABLE product ADD COLUMN category VARCHAR(500);")
-    cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
-    cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
+    #cursor.execute("ALTER TABLE product ADD COLUMN category VARCHAR(500);")
+    #cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
+    #cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
+    #cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
     print("created")
-    cursor.close()
-    cnx.commit()
+    #cursor.close()
+    #cnx.commit()
 
 def insert_orginal(id,mid_orginals):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
