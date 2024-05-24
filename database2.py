@@ -1,13 +1,14 @@
 import mysql.connector
 import time
 
-#dict_info={
-#    'user':'root',
-#    "password":'ma8h2dii',
-#    'host':'localhost',
-#    "database":"data"
-#}
-#(user='root', password='u3nZED2tr2ygrTAAHeib',host='data-txx-service')
+# dict_info={
+#     'user':'root',
+#     "password":'ma8h2dii',
+#     'host':'localhost',
+#     "database":"data"
+# }
+
+# (user='root', password='u3nZED2tr2ygrTAAHeib',host='data-txx-service')
 dict_info={
     'user':'root',
     "password":'u3nZED2tr2ygrTAAHeib',
@@ -36,13 +37,14 @@ def create_database():
     #                title VARCHAR(500),
     #                details TEXT, 
     #                price INT);""")
-    cursor.execute("ALTER TABLE product ADD COLUMN category VARCHAR(500);")
+    # cursor.execute("ALTER TABLE product ADD COLUMN category VARCHAR(500);")
+    # cursor.execute("ALTER TABLE product ADD COLUMN details_text TEXT;")
     cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
     cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
     cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
     print("created")
-    #cursor.close()
-    #cnx.commit()
+    cursor.close()
+    cnx.commit()
 
 def insert_orginal(id,mid_orginals):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
@@ -56,7 +58,12 @@ def use_orginal_id(id):
     cursor.execute(f"select * from orginalfiles where id={id}")  
     f = cursor.fetchall()
     return f
-
+def delete_orginal_id(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"delete from orginalfiles where id={id}") 
+    cursor.close()
+    cnx.commit()
 
 
 
@@ -72,6 +79,12 @@ def use_sample_id(id):
     cursor.execute(f"select * from sample where id={id}")  
     f = cursor.fetchall()
     return f
+def delete_sample_id(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"delete from sample where id={id}") 
+    cursor.close()
+    cnx.commit()
 
 
 
@@ -92,6 +105,12 @@ def updete_comments(id,mid_comment):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
     cursor = cnx.cursor(dictionary=True)
     cursor.execute(f"update comments set mid_comment='{mid_comment}' where id={id}")
+    cursor.close()
+    cnx.commit()
+def delete_comments_id(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"delete from comments where id={id}") 
     cursor.close()
     cnx.commit()
 
@@ -130,6 +149,12 @@ def use_product_photo(photo_id):
     cursor.execute(f"select * from product where photo_id='{photo_id}'")  
     f = cursor.fetchall()
     return f
+def delete_product(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"delete from product where id={id}") 
+    cursor.close()
+    cnx.commit()
 
 
 
