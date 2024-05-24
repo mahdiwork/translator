@@ -2488,7 +2488,7 @@ def send_music(m):
     mid=m.message_id
     dict_pro=database2.use_product_id(id_for_comment["id"])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment["id"]}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
+    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment['id']}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
     bot.send_message(admin,f"""
 کامنت برای محصول : {dict_pro['title']}
 از دسته : {dict_pro['category']}
