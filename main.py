@@ -639,7 +639,7 @@ def languages_def(call):
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
     markup.add(InlineKeyboardButton("جزئیات",web_app=WebAppInfo(dict_product["details"])))
-    markup.add(InlineKeyboardButton("جزئیات",callback_data=f'showdetailstextproduct_{dict_product['id']}'))
+    markup.add(InlineKeyboardButton("جزئیات",callback_data=f"showdetailstextproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
