@@ -400,7 +400,7 @@ def command_start(m):
         markup.add("بیشترین کلمات ترجمه شده 📊")
         markup.add("میزان اشتراک باقیمانده 📆")
         markup.add("فروشگاه 🛒")
-        markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
+        # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
         bot.send_message(cid,f"""
 سلام {m.chat.first_name} عزیز 
 به ربات مترجم خوش آمدید
@@ -1372,7 +1372,7 @@ def languages_def(call):
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
+    # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
 
 
@@ -1392,7 +1392,7 @@ def languages_def(call):
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
+    # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
         
 
@@ -1554,7 +1554,7 @@ def handel_text(m):
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
+    # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"برای دریافت ترجمه کلمه یا جمله مورد نظر خود را ارسال کنید",reply_markup=markup)
     userStep[cid]=1
 
@@ -1577,7 +1577,7 @@ def handel_text(m):
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
+    # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"لطفا برای دریافت تعریف لغت کلمه خود را ارسال کنید:",reply_markup=markup)
     userStep[cid]=2
 
@@ -1611,7 +1611,7 @@ def menu_kebord_markup(m):
     markup.add("بیشترین کلمات ترجمه شده 📊")
     markup.add("میزان اشتراک باقیمانده 📆")
     markup.add("فروشگاه 🛒")
-    markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
+    # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"منو اصلی",reply_markup=markup)
 # @bot.message_handler(func=lambda m: m.text==)
 # def handel_text(m):
@@ -2509,7 +2509,7 @@ def send_music(m):
     mid=m.message_id
     dict_pro=database2.use_product_id(id_for_comment["id"])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment["id"]}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
+    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment['id']}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
     bot.send_message(admin,f"""
 کامنت برای محصول : {dict_pro['title']}
 از دسته : {dict_pro['category']}
