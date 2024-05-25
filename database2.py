@@ -39,9 +39,10 @@ def create_database():
     #                price INT);""")
     # cursor.execute("ALTER TABLE product ADD COLUMN category VARCHAR(500);")
     # cursor.execute("ALTER TABLE product ADD COLUMN details_text TEXT;")
-    cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
-    cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
+    #cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
+    #cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
+    #cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS sample2(id INT,mid_sample VARCHAR(500))")
     print("created")
     cursor.close()
     cnx.commit()
@@ -70,19 +71,19 @@ def delete_orginal_id(id):
 def insert_sample(id,mid_sample):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
     cursor = cnx.cursor(dictionary=True)
-    cursor.execute(f"insert into sample (id,mid_sample) values ({id},{mid_sample});")
+    cursor.execute(f"insert into sample2 (id,mid_sample) values ({id},'{mid_sample}');")
     cursor.close()
     cnx.commit()
 def use_sample_id(id):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
     cursor = cnx.cursor(dictionary=True)
-    cursor.execute(f"select * from sample where id={id}")  
+    cursor.execute(f"select * from sample2 where id={id}")  
     f = cursor.fetchall()
     return f
 def delete_sample_id(id):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
     cursor = cnx.cursor(dictionary=True)
-    cursor.execute(f"delete from sample where id={id}") 
+    cursor.execute(f"delete from sample2 where id={id}") 
     cursor.close()
     cnx.commit()
 
