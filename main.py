@@ -19,7 +19,8 @@ import amar
 import checkpay
 
 print("ok")
-#database2.create_database()
+database2.create_database()
+
 # database2.insert_users(56464564)
 # from nltk.corpus import wordnet
 # import nltk
@@ -76,7 +77,7 @@ dict_opposite={}
 dict_interest={}
 dict_cid_language_dest={}
 dict_cid_language_source={}
-add_product_admin={"category":"","photo_id":"","title":"","details":"","price":0,"msg_id_sample":0,"msg_id_product":""}
+add_product_admin={"category":"","photo_id":"","title":"","details":"","price":0,"msg_id_sample":"","msg_id_product":""}
 info_change={"cid":0,"id":"i"}
 button_site={}
 dict_price={"status":"no",1:0,3:0,12:0}
@@ -533,6 +534,18 @@ def languages_def(call):
         bot.answer_callback_query(call.id,'محصولی وجود ندارد')
 
 
+@bot.callback_query_handler(func=lambda call: call.data.startswith("completedsample"))
+def languages_def(call):
+    cid = call.message.chat.id
+    mid = call.message.message_id
+    text=call.message.text
+    markup=InlineKeyboardMarkup()
+    markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+    bot.edit_message_text("""
+نمونه ها کاملا دریافت شد
+لطفا فایل ها یا کلیپ های اصلی محصول را ارسال کنید:""",cid,mid,reply_markup=markup)
+    userStep[cid]=10005
+
 @bot.callback_query_handler(func=lambda call: call.data.startswith("completed"))
 def languages_def(call):
     cid = call.message.chat.id
@@ -639,7 +652,7 @@ def languages_def(call):
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
     markup.add(InlineKeyboardButton("جزئیات",web_app=WebAppInfo(dict_product["details"])))
-    markup.add(InlineKeyboardButton("جزئیات",callback_data=f"showdetailstextproduct_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton("جزئیات",callback_data=f'showdetailstextproduct_{dict_product["id"]}'))
     markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
@@ -662,9 +675,17 @@ def call_callback_panel_sends(call):
     cid = call.message.chat.id
     mid = call.message.message_id
     ID=int(call.data.split("_")[1])
-    msg_id=int(database2.use_sample_id(ID)[0]['mid_sample'])
+    msg_id=database2.use_sample_id(ID)[0]['mid_sample']
     bot.send_message(cid,"نمونه محصول 👇")
-    bot.copy_message(cid,channel_sample,msg_id)
+
+    if ',' not in msg_id:
+        bot.copy_message(cid,channel_sample,int(msg_id))
+    else:
+        list_msg_id_pro=msg_id.split(",")
+        for i in list_msg_id_pro:
+            bot.copy_message(cid,channel_sample,int(i))
+
+    # bot.copy_message(cid,channel_sample,msg_id)
     bot.answer_callback_query(call.id,"نمونه محصول ارسال شد")
 
 
@@ -2488,7 +2509,7 @@ def send_music(m):
     mid=m.message_id
     dict_pro=database2.use_product_id(id_for_comment["id"])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment['id']}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
+    markup.add(InlineKeyboardButton("تایید",callback_data=f"confirmcomment_{id_for_comment["id"]}"),InlineKeyboardButton("رد کردن",callback_data="regectcomment"))
     bot.send_message(admin,f"""
 کامنت برای محصول : {dict_pro['title']}
 از دسته : {dict_pro['category']}
@@ -2502,7 +2523,7 @@ def send_music(m):
 
 
 
-@bot.message_handler(content_types=['photo', 'video','voice', 'sticker','animation'])
+@bot.message_handler(content_types=['photo','document' ,'video','voice', 'sticker','animation'])
 def handle_messages(m):
     cid = m.chat.id
     mid=m.message_id
@@ -2648,11 +2669,22 @@ def handle_messages(m):
         mid=m.message_id
         msg=bot.copy_message(channel_sample,cid,mid)
         msg_id=msg.message_id
-        add_product_admin["msg_id_sample"]=msg_id
+        # add_product_admin["msg_id_sample"]=msg_id
+
+        if add_product_admin["msg_id_sample"]=="":
+            add_product_admin["msg_id_sample"]=f"{msg_id}"
+        else:
+            add_product_admin["msg_id_sample"]+=f",{msg_id}"
         markup=InlineKeyboardMarkup()
         markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
-        bot.send_message(cid,"لطفا فایل ها یا کلیپ های اصلی محصول را ارسال کنید:",reply_markup=markup)
-        userStep[cid]=10005
+        markup.add(InlineKeyboardButton("ادامه",callback_data="completedsample"))
+        bot.send_message(cid,"در صورتی که تمام نمونه ها را ارسال کرده اید بر روی دکمه ادامه کلیک کنید در غیر این صورت فایل ها یا کلیپ های بعدی را ارسال کنید:",reply_markup=markup)
+
+
+        # markup=InlineKeyboardMarkup()
+        # markup.add(InlineKeyboardButton("بازگشت به پنل",callback_data="back_panel"))
+        # bot.send_message(cid,"لطفا فایل ها یا کلیپ های اصلی محصول را ارسال کنید:",reply_markup=markup)
+        # userStep[cid]=10005
 
     elif get_user_step(cid)==10005:
         mid=m.message_id
