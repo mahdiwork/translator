@@ -19,7 +19,7 @@ import amar
 import checkpay
 
 print("ok")
-database2.create_database()
+#database2.create_database()
 
 # database2.insert_users(56464564)
 # from nltk.corpus import wordnet
