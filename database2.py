@@ -9,6 +9,7 @@ import time
 # }
 
 # (user='root', password='u3nZED2tr2ygrTAAHeib',host='data-txx-service')
+
 dict_info={
     'user':'root',
     "password":'u3nZED2tr2ygrTAAHeib',
@@ -39,10 +40,15 @@ def create_database():
     #                price INT);""")
     # cursor.execute("ALTER TABLE product ADD COLUMN category VARCHAR(500);")
     # cursor.execute("ALTER TABLE product ADD COLUMN details_text TEXT;")
-    #cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
-    #cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
-    #cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
-    cursor.execute("CREATE TABLE IF NOT EXISTS sample2(id INT,mid_sample VARCHAR(500))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS comments(id INT,mid_comment VARCHAR(500))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS sample(id INT,mid_sample INT)")
+
+    # cursor.execute("CREATE TABLE IF NOT EXISTS sample2(id INT,mid_sample VARCHAR(500))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
+
+    cursor.execute("ALTER TABLE product ADD COLUMN likep INT DEFAULT 0;")
+    cursor.execute("ALTER TABLE product ADD COLUMN dislike INT DEFAULT 0;")
+
     print("created")
     cursor.close()
     cnx.commit()
@@ -154,6 +160,32 @@ def delete_product(id):
     cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
     cursor = cnx.cursor(dictionary=True)
     cursor.execute(f"delete from product where id={id}") 
+    cursor.close()
+    cnx.commit()
+
+def like_up(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"update product set likep=likep+1 where id={id}")
+    cursor.close()
+    cnx.commit()
+def like_down(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"update product set likep=likep-1 where id={id}")
+    cursor.close()
+    cnx.commit()
+
+def dislike_up(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"update product set dislike=dislike+1 where id={id}")
+    cursor.close()
+    cnx.commit()
+def dislike_down(id):
+    cnx = mysql.connector.connect(user=dict_info['user'], password=dict_info['password'],host=dict_info['host'],database=dict_info['database'])
+    cursor = cnx.cursor(dictionary=True)
+    cursor.execute(f"update product set dislike=dislike-1 where id={id}")
     cursor.close()
     cnx.commit()
 
