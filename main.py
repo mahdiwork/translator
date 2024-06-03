@@ -1451,7 +1451,7 @@ def call_callback_panel_amar(call):
     markup.add(InlineKeyboardButton('ارسال همگانی',callback_data='panel_brodcast'),InlineKeyboardButton('فوروارد همگانی',callback_data='panel_forall'))
     markup.add(InlineKeyboardButton("لیست کاربران",callback_data="listusers"),InlineKeyboardButton("تغییر میزان اشتراک کاربران",callback_data="changeeshterak"))
     # markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"),InlineKeyboardButton("تنظیم دکمه سایت",callback_data="seting"))
-    markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"))
+    markup.add(InlineKeyboardButton("اطلاعات خریداران",callback_data="infopay"),InlineKeyboardButton('جوین اجباری',callback_data='forced_to_join'))
     markup.add(InlineKeyboardButton("افزودن محصول",callback_data="adminaddproduct"),InlineKeyboardButton('مدیریت محصولات',callback_data='adminmanageproduct'))
     markup.add(InlineKeyboardButton("ویرایش و فعال سازی قیمت پلن ها",callback_data="editprice"))
     bot.edit_message_text("""
