@@ -19,7 +19,7 @@ import amar
 import checkpay
 
 print("ok")
-#database2.create_database()
+database2.create_database()
 
 # database2.insert_users(56464564)
 # from nltk.corpus import wordnet
@@ -414,8 +414,8 @@ def command_start(m):
                 markup=ReplyKeyboardMarkup(resize_keyboard=True)
                 markup.add("ترجمه")
                 markup.add("مترادف و تعریف لغت انگلیسی")
-                markup.add("بیشترین کلمات ترجمه شده 📊")
-                markup.add("میزان اشتراک باقیمانده 📆")
+                # markup.add("پرجستجوترینها 📊")
+                markup.add("اشتراک 📆","پرجستجوترینها 📊")
                 markup.add("فروشگاه 🛒")
                 # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
                 bot.send_message(cid,f"""
@@ -436,8 +436,8 @@ def command_start(m):
             markup=ReplyKeyboardMarkup(resize_keyboard=True)
             markup.add("ترجمه")
             markup.add("مترادف و تعریف لغت انگلیسی")
-            markup.add("بیشترین کلمات ترجمه شده 📊")
-            markup.add("میزان اشتراک باقیمانده 📆")
+            # markup.add("پرجستجوترینها 📊")
+            markup.add("اشتراک 📆","پرجستجوترینها 📊")
             markup.add("فروشگاه 🛒")
             # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
             bot.send_message(cid,f"""
@@ -491,13 +491,14 @@ def languages_def(call):
 
     dict_product=database2.use_product_id(product_id)[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
     # markup.add(InlineKeyboardButton("جزئیات",web_app=WebAppInfo(dict_product["details"])))
     # markup.add(InlineKeyboardButton("جزئیات",callback_data=f'showdetailstextproduct_{dict_product["id"]}'))
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
     else:
@@ -527,13 +528,14 @@ def languages_def(call):
 
     dict_product=database2.use_product_id(product_id)[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
     # markup.add(InlineKeyboardButton("جزئیات",web_app=WebAppInfo(dict_product["details"])))
     # markup.add(InlineKeyboardButton("جزئیات",callback_data=f'showdetailstextproduct_{dict_product["id"]}'))
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
     else:
@@ -650,13 +652,14 @@ def languages_def(call):
     dict_product=database2.use_product_id(ID)[0]
 
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
     # markup.add(InlineKeyboardButton("جزئیات",web_app=WebAppInfo(dict_product["details"])))
     # markup.add(InlineKeyboardButton("جزئیات",callback_data=f'showdetailstextproduct_{dict_product["id"]}'))
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
     else:
@@ -736,7 +739,7 @@ def languages_def(call):
         for i in list_pro:
             markup=InlineKeyboardMarkup()
             markup.add(InlineKeyboardButton("حذف محصول",callback_data=f"admindeleteproduct_{i['id']}"))
-            markup.add(InlineKeyboardButton("نمایش نظرات",callback_data=f"adminshowcomments_{i['id']}"))
+            # markup.add(InlineKeyboardButton("نمایش نظرات",callback_data=f"adminshowcomments_{i['id']}"))
             bot.send_message(cid,f"""
 نام محصول: {i['title']}
 از دسته: {i['category']}
@@ -860,13 +863,14 @@ def languages_def(call):
     dict_product=database2.use_product_id(ID)[0]
 
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
     # markup.add(InlineKeyboardButton("جزئیات",web_app=WebAppInfo(dict_product["details"])))
     # markup.add(InlineKeyboardButton("جزئیات",callback_data=f'showdetailstextproduct_{dict_product["id"]}'))
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
     else:
@@ -1027,11 +1031,12 @@ def call_callback_panel_sends(call):
     dict_interest[cid].append(int(data[1]))
     dict_=database2.use_product_id(data[1])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"),InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"),InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"),InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_["details"]))
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
     markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_['id']}"))
     bot.edit_message_reply_markup(cid,mid,reply_markup=markup)
     bot.answer_callback_query(call.id,"محصول مورد نظر به لیست علاقه مندی های شما اضافه شد")
@@ -1045,11 +1050,12 @@ def call_callback_panel_sends(call):
     dict_interest[cid].remove(int(data[1]))
     dict_=database2.use_product_id(data[1])[0]
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"),InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"),InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"),InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_["details"]))
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
     markup.add(InlineKeyboardButton("افزودن به علاقه مندی ها ❤️",callback_data=f"addinca_{dict_['id']}"))
     
     bot.edit_message_reply_markup(cid,mid,reply_markup=markup)
@@ -1584,8 +1590,8 @@ def languages_def(call):
     if cid in dict_cid_language_dest:
         markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
     markup.add("مترادف و تعریف لغت انگلیسی")
-    markup.add("بیشترین کلمات ترجمه شده 📊")
-    markup.add("میزان اشتراک باقیمانده 📆")
+    # markup.add("پرجستجوترینها 📊")
+    markup.add("اشتراک 📆","پرجستجوترینها 📊")
     markup.add("فروشگاه 🛒")
     # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
@@ -1604,8 +1610,8 @@ def languages_def(call):
     if cid in dict_cid_language_dest:
         markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
     markup.add("مترادف و تعریف لغت انگلیسی")
-    markup.add("بیشترین کلمات ترجمه شده 📊")
-    markup.add("میزان اشتراک باقیمانده 📆")
+    # markup.add("پرجستجوترینها 📊")
+    markup.add("اشتراک 📆","پرجستجوترینها 📊")
     markup.add("فروشگاه 🛒")
     # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"زبان شما انتخاب شد\nکلمه یا جمله خود را برای ترجمه ارسال کنید:",reply_markup=markup)
@@ -1622,7 +1628,8 @@ def languages_def(call):
     dict_product=database2.use_product_id(ID)
 
     markup=InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"))
+    markup.add(InlineKeyboardButton(f"{dict_product['dislike']} 👎",callback_data=f"dislike_{dict_product['id']}"),InlineKeyboardButton(f"{dict_product['likep']} 👍",callback_data=f"like_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_product['id']}"))
     markup.add(InlineKeyboardButton("جزئیات",url=dict_product["details"]))
@@ -1630,7 +1637,7 @@ def languages_def(call):
     # web_app_url = 'http://192.168.1.4:5000/web_app.html'  # آدرس سرور محلی شما
     # markup.add(InlineKeyboardButton(text="Open Web App", web_app=WebAppInfo(url=web_app_url)))
   
-    markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
+    # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_product['id']}"))
     if int(dict_product['id']) in dict_interest[cid]:
         markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_product['id']}"))
     else:
@@ -1767,8 +1774,8 @@ def handel_text(m):
     if cid in dict_cid_language_dest:
         markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
     markup.add("مترادف و تعریف لغت انگلیسی")
-    markup.add("بیشترین کلمات ترجمه شده 📊")
-    markup.add("میزان اشتراک باقیمانده 📆")
+    # markup.add("پرجستجوترینها 📊")
+    markup.add("اشتراک 📆","پرجستجوترینها 📊")
     markup.add("فروشگاه 🛒")
     # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"برای دریافت ترجمه کلمه یا جمله مورد نظر خود را ارسال کنید",reply_markup=markup)
@@ -1790,8 +1797,8 @@ def handel_text(m):
     markup=ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add("ترجمه")
     markup.add('✅مترادف و تعریف لغت انگلیسی✅')
-    markup.add("بیشترین کلمات ترجمه شده 📊")
-    markup.add("میزان اشتراک باقیمانده 📆")
+    # markup.add("پرجستجوترینها 📊")
+    markup.add("اشتراک 📆","پرجستجوترینها 📊")
     markup.add("فروشگاه 🛒")
     # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"لطفا برای دریافت تعریف لغت کلمه خود را ارسال کنید:",reply_markup=markup)
@@ -1824,8 +1831,8 @@ def menu_kebord_markup(m):
     # if cid in dict_cid_language_dest:
     #     markup.add(f"ترجمه به: {languages_aks[dict_cid_language_dest[cid]]}",f"ترجمه از: {languages_aks[dict_cid_language_source[cid]]}")
     markup.add("مترادف و تعریف لغت انگلیسی")
-    markup.add("بیشترین کلمات ترجمه شده 📊")
-    markup.add("میزان اشتراک باقیمانده 📆")
+    # markup.add("پرجستجوترینها 📊")
+    markup.add("اشتراک 📆","پرجستجوترینها 📊")
     markup.add("فروشگاه 🛒")
     # markup.add(KeyboardButton("وب اپ نوین زبان 🔗",web_app=WebAppInfo("https://novinzaban.com/")))
     bot.send_message(cid,"منو اصلی",reply_markup=markup)
@@ -1899,7 +1906,7 @@ def handel_text(m):
 
 
 
-@bot.message_handler(func=lambda m: m.text=="میزان اشتراک باقیمانده 📆")
+@bot.message_handler(func=lambda m: m.text=="اشتراک 📆")
 def handel_text(m):
     cid=m.chat.id
     text=m.text
@@ -1921,7 +1928,7 @@ def handel_text(m):
         bot.send_message(cid,f"باقیمانده اشتراک شما {dict_info['rem']} روز است.",reply_markup=markup)
 
 
-@bot.message_handler(func=lambda m: m.text=="بیشترین کلمات ترجمه شده 📊")
+@bot.message_handler(func=lambda m: m.text=="پرجستجوترینها 📊")
 def handel_text(m):
     cid=m.chat.id
     text=m.text
@@ -1931,7 +1938,7 @@ def handel_text(m):
     for i in list_databas:
         list_words.append(i["word"])
     path_png=amar.get_list_words(list_words)
-    bot.send_photo(cid,photo=open(path_png,"rb"),caption="بیشترین کلمات ترجمه شده 📊")
+    bot.send_photo(cid,photo=open(path_png,"rb"),caption="پرجستجوترینها 📊")
 
 
 @bot.message_handler(func=lambda m: m.text=='ویژگی های نویـن زبان')
@@ -2073,11 +2080,12 @@ def shopiing(m):
             for i in dict_interest[cid]:
                 dict_=database2.use_product_id(i)[0]
                 markup=InlineKeyboardMarkup()
-                markup.add(InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"),InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"))
+                # markup.add(InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"),InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"))
+                markup.add(InlineKeyboardButton(f"{dict_['dislike']} 👎",callback_data=f"dislike_{dict_['id']}"),InlineKeyboardButton(f"{dict_['likep']} 👍",callback_data=f"like_{dict_['id']}"))
                 markup.add(InlineKeyboardButton("نمونه محصول",callback_data=f"sample_{dict_['id']}"))
                 markup.add(InlineKeyboardButton("خرید 💳",callback_data=f"payproduct_{dict_['id']}"))
                 markup.add(InlineKeyboardButton("جزئیات",url=dict_["details"]))
-                markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
+                # markup.add(InlineKeyboardButton("نظرات کاربران",callback_data=f"comments_{dict_['id']}"))
                 markup.add(InlineKeyboardButton("حذف از علاقه مندی ها ❌",callback_data=f"unaddinca_{dict_['id']}"))
                 bot.send_photo(cid,dict_["photo_id"],f"""
 {dict_["title"]}
