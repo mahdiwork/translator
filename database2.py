@@ -46,8 +46,8 @@ def create_database():
     # cursor.execute("CREATE TABLE IF NOT EXISTS sample2(id INT,mid_sample VARCHAR(500))")
     # cursor.execute("CREATE TABLE IF NOT EXISTS orginalfiles(id INT,mid_orginals VARCHAR(500))")
 
-    cursor.execute("ALTER TABLE product ADD COLUMN likep INT DEFAULT 0;")
-    cursor.execute("ALTER TABLE product ADD COLUMN dislike INT DEFAULT 0;")
+    #cursor.execute("ALTER TABLE product ADD COLUMN likep INT DEFAULT 0;")
+    #cursor.execute("ALTER TABLE product ADD COLUMN dislike INT DEFAULT 0;")
 
     print("created")
     cursor.close()
